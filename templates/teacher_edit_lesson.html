@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block title %}Edit Lesson{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h3 class="mb-4">Edit Lesson</h3>
+
+    <form method="POST">
+        <div class="col-md-4">
+    <label class="form-label">Date</label>
+    <input type="date" name="lesson_date"
+           class="form-control"
+           value="{{ lesson.lesson_date }}">
+</div>
+
+<div class="col-md-4">
+    <label class="form-label">Week Ending</label>
+    <input type="date" name="week_ending"
+           class="form-control"
+           value="{{ lesson.week_ending }}">
+</div>
+            <div class="col-md-4">
+                <label class="form-label">Class</label>
+                <select name="class_name" class="form-select">
+                    {% for c in ['Primary 1','Primary 2','Primary 3','Primary 4','Primary 5','Primary 6','JHS 1','JHS 2','JHS 3'] %}
+                        <option value="{{ c }}" {% if lesson.class_name == c %}selected{% endif %}>{{ c }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col">
+                <label class="form-label">Subject</label>
+                <input type="text" name="subject" class="form-control" value="{{ lesson.subject }}">
+            </div>
+            <div class="col">
+                <label class="form-label">Lesson Title</label>
+                <input type="text" name="lesson_title" class="form-control" value="{{ lesson.lesson_title }}">
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col">
+                <label class="form-label">Strand</label>
+                <input type="text" name="strand" class="form-control" value="{{ lesson.strand }}">
+            </div>
+            <div class="col">
+                <label class="form-label">Sub-Strand</label>
+                <input type="text" name="sub_strand" class="form-control" value="{{ lesson.sub_strand }}">
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col">
+                <label class="form-label">Day</label>
+                <select name="day" class="form-select">
+                    {% for d in ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'] %}
+                        <option value="{{ d }}" {% if lesson.day == d %}selected{% endif %}>{{ d }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col">
+                <label class="form-label">Period</label>
+                <input type="text" name="period" class="form-control" value="{{ lesson.period }}">
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Class Size</label>
+            <input type="number" name="class_size" class="form-control" value="{{ lesson.class_size }}">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Indicator Code</label>
+            <textarea name="indicator_code" class="form-control" rows="2">{{ lesson.indicator_code }}</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Content Standard Code</label>
+            <textarea name="content_standard_code" class="form-control" rows="2">{{ lesson.content_standard_code }}</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Performance Indicator</label>
+            <textarea name="performance_indicator" class="form-control" rows="3">{{ lesson.performance_indicator }}</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Core Competencies</label>
+            <textarea name="core_competencies" class="form-control" rows="2">{{ lesson.core_competencies }}</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Keywords</label>
+            <input type="text" name="keywords" class="form-control" value="{{ lesson.keywords }}">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Teaching & Learning Resources (TLR)</label>
+            <textarea name="tlr" class="form-control" rows="2">{{ lesson.tlr }}</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Reference</label>
+            <input type="text" name="reference" class="form-control" value="{{ lesson.reference }}">
+        </div>
+
+        <!-- Phases -->
+        <div class="mb-3">
+            <label class="form-label">Phase 1 (Starter)</label>
+            <textarea name="phase1" class="form-control" rows="3">{{ lesson.phase1 }}</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Phase 2 (Main)</label>
+            <textarea name="phase2" class="form-control" rows="3">{{ lesson.phase2 }}</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Phase 3 (Reflections)</label>
+            <textarea name="phase3" class="form-control" rows="3">{{ lesson.phase3 }}</textarea>
+        </div>
+
+        <!-- Teaching Details -->
+        <div class="mb-3">
+            <label class="form-label">Teaching & Learning Materials</label>
+            <textarea name="materials" class="form-control" rows="2">{{ lesson.materials }}</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Assessment / Evaluation</label>
+            <textarea name="assessment" class="form-control" rows="2">{{ lesson.assessment }}</textarea>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">Update Lesson</button>
+    </form>
+</div>
+{% endblock %}

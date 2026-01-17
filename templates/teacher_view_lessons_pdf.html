@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Lesson PDF</title>
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; }
+        h2 { text-align: center; }
+        .field-label { font-weight: bold; margin-top: 10px; }
+        .field-value { margin-bottom: 10px; }
+        textarea { width: 100%; border: 1px solid #ccc; padding: 5px; }
+    </style>
+</head>
+<body>
+    <h2>Lesson: {{ lesson.lesson_title }}</h2>
+
+    <div class="field">
+        <div class="field-label">Date:</div>
+        <div class="field-value">{{ lesson.lesson_date }}</div>
+    </div>
+
+    <div class="field">
+        <div class="field-label">Week Ending:</div>
+        <div class="field-value">{{ lesson.week_ending }}</div>
+    </div>
+
+    <div class="field">
+        <div class="field-label">Class:</div>
+        <div class="field-value">{{ lesson.class_name }}</div>
+    </div>
+
+    <div class="field">
+        <div class="field-label">Subject:</div>
+        <div class="field-value">{{ lesson.subject }}</div>
+    </div>
+
+    <div class="field">
+        <div class="field-label">Strand:</div>
+        <div class="field-value">{{ lesson.strand }}</div>
+    </div>
+
+    <div class="field">
+        <div class="field-label">Sub-Strand:</div>
+        <div class="field-value">{{ lesson.sub_strand }}</div>
+    </div>
+
+    <div class="field">
+        <div class="field-label">Indicator Code:</div>
+        <div class="field-value">{{ lesson.indicator_code }}</div>
+    </div>
+
+    <div class="field">
+        <div class="field-label">Content Standard Code:</div>
+        <div class="field-value">{{ lesson.content_standard_code }}</div>
+    </div>
+
+    <div class="field">
+        <div class="field-label">Performance Indicator:</div>
+        <textarea rows="3">{{ lesson.performance_indicator }}</textarea>
+    </div>
+
+    <div class="field">
+        <div class="field-label">Core Competencies:</div>
+        <textarea rows="2">{{ lesson.core_competencies }}</textarea>
+    </div>
+
+    <div class="field">
+        <div class="field-label">Keywords:</div>
+        <div class="field-value">{{ lesson.keywords }}</div>
+    </div>
+
+    <div class="field">
+        <div class="field-label">TLR:</div>
+        <textarea rows="2">{{ lesson.tlr }}</textarea>
+    </div>
+
+    <div class="field">
+        <div class="field-label">Reference:</div>
+        <div class="field-value">{{ lesson.reference }}</div>
+    </div>
+
+    <div class="field">
+        <div class="field-label">Phases:</div>
+        <div class="field-value">
+            <strong>Phase 1 (Starter):</strong> {{ lesson.phase1 }}<br>
+            <strong>Phase 2 (Main):</strong> {{ lesson.phase2 }}<br>
+            <strong>Phase 3 (Reflections):</strong> {{ lesson.phase3 }}
+        </div>
+    </div>
+
+    <div class="field">
+        <div class="field-label">Teaching Materials:</div>
+        <textarea rows="2">{{ lesson.materials }}</textarea>
+    </div>
+
+    <div class="field">
+        <div class="field-label">Assessment:</div>
+        <textarea rows="2">{{ lesson.assessment }}</textarea>
+    </div>
+</body>
+</html>

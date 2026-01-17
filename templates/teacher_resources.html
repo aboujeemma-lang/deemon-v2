@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Teaching Resources{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h3 class="mb-4">Scheme of Work Resources</h3>
+
+    <div class="row">
+        {% for scheme in schemes %}
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ scheme.title }}</h5>
+
+                    <a href="{{ url_for('static', filename='resources/' ~ scheme.file) }}"
+                       target="_blank"
+                       class="btn btn-primary btn-sm me-2">
+                        View
+                    </a>
+
+                    <a href="{{ url_for('static', filename='resources/' ~ scheme.file) }}"
+                       download
+                       class="btn btn-outline-secondary btn-sm">
+                        Download
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <a href="{{ url_for('teacher_dashboard') }}" class="btn btn-secondary mt-4">
+        Back to Dashboard
+    </a>
+</div>
+{% endblock %}

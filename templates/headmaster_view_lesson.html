@@ -1,175 +1,94 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Review Lesson</title>
+{% extends "base.html" %}
+{% block title %}Review Lesson{% endblock %}
 
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
+{% block content %}
+<div class="container mt-5">
 
-<body class="bg-light">
-
-<div class="container mt-5 mb-5">
-
-  <!-- Page Title -->
-  <div class="text-center mb-4">
-    <h3 class="fw-bold">Lesson Review</h3>
-    <p class="text-muted">Headmaster Approval Panel</p>
-  </div>
-
-  <!-- Lesson Details Card -->
-  <div class="card shadow-sm mb-4">
-    <div class="card-header bg-dark text-white">
-      Lesson Information
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold">Lesson Review</h4>
+        <a href="{{ url_for('headmaster_dashboard') }}" class="btn btn-outline-secondary btn-sm">
+            ← Back to Dashboard
+        </a>
     </div>
 
-    <div class="card-body">
-
-      <div class="row mb-2">
-        <div class="col-md-4"><strong>Teacher:</strong></div>
-        <div class="col-md-8">{{ lesson.teacher.name }}</div>
-      </div>
-
-      <div class="row mb-2">
-        <div class="col-md-4"><strong>Subject:</strong></div>
-        <div class="col-md-8">{{ lesson.subject }}</div>
-      </div>
-
-      <div class="row mb-2">
-        <div class="col-md-4"><strong>Class:</strong></div>
-        <div class="col-md-8">{{ lesson.class_name }}</div>
-      </div>
-
-      <div class="row mb-2">
-        <div class="col-md-4"><strong>Lesson Title:</strong></div>
-        <div class="col-md-8">{{ lesson.lesson_title }}</div>
-      </div>
-
-      <div class="row mb-2">
-        <div class="col-md-4"><strong>Week Ending:</strong></div>
-        <div class="col-md-8">{{ lesson.week_ending }}</div>
-      </div>
-
-      <div class="row mb-2">
-        <div class="col-md-4"><strong>Day:</strong></div>
-        <div class="col-md-8">{{ lesson.day }}</div>
-      </div>
-
-      <div class="row mb-2">
-        <div class="col-md-4"><strong>Period:</strong></div>
-        <div class="col-md-8">{{ lesson.period }}</div>
-      </div>
-
-      <div class="row mb-2">
-        <div class="col-md-4"><strong>Class Size:</strong></div>
-        <div class="col-md-8">{{ lesson.class_size }}</div>
-      </div>
-
-      <div class="row mb-2">
-        <div class="col-md-4"><strong>Strand:</strong></div>
-        <div class="col-md-8">{{ lesson.strand }}</div>
-      </div>
-
-      <div class="row mb-2">
-        <div class="col-md-4"><strong>Sub-Strand:</strong></div>
-        <div class="col-md-8">{{ lesson.sub_strand }}</div>
-      </div>
-
-      <div class="row mb-2">
-        <div class="col-md-4"><strong>Indicator Code:</strong></div>
-        <div class="col-md-8">{{ lesson.indicator_code }}</div>
-      </div>
-
-      <div class="row mb-2">
-        <div class="col-md-4"><strong>Content Standard:</strong></div>
-        <div class="col-md-8">{{ lesson.content_standard_code }}</div>
-      </div>
-
-      <div class="row mb-2">
-        <div class="col-md-4"><strong>Performance Indicator:</strong></div>
-        <div class="col-md-8">{{ lesson.performance_indicator }}</div>
-      </div>
-
-      <div class="row mb-2">
-        <div class="col-md-4"><strong>Core Competencies:</strong></div>
-        <div class="col-md-8">{{ lesson.core_competencies }}</div>
-      </div>
-
-      <div class="row mb-2">
-        <div class="col-md-4"><strong>Keywords:</strong></div>
-        <div class="col-md-8">{{ lesson.keywords }}</div>
-      </div>
-
-      <div class="row mb-2">
-        <div class="col-md-4"><strong>TLR:</strong></div>
-        <div class="col-md-8">{{ lesson.tlr }}</div>
-      </div>
-
-      <div class="row mb-2">
-        <div class="col-md-4"><strong>Reference:</strong></div>
-        <div class="col-md-8">{{ lesson.reference }}</div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- Lesson Phases -->
-  <div class="card shadow-sm mb-4">
-    <div class="card-header bg-primary text-white">
-      Lesson Content
+    <!-- Lesson Overview -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light fw-bold">Lesson Overview</div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Teacher:</strong><br>{{ lesson.teacher.name }}</div>
+                <div class="col-md-4"><strong>Subject:</strong><br>{{ lesson.subject }}</div>
+                <div class="col-md-4"><strong>Class:</strong><br>{{ lesson.class_name }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Lesson Date:</strong><br>{{ lesson.lesson_date }}</div>
+                <div class="col-md-4"><strong>Week Ending:</strong><br>{{ lesson.week_ending }}</div>
+                <div class="col-md-4"><strong>Status:</strong><br>
+                    <span class="badge 
+                        {% if lesson.status=='pending' %}bg-warning text-dark{% elif lesson.status=='approved' %}bg-success{% elif lesson.status=='rejected' %}bg-danger{% else %}bg-secondary{% endif %}">
+                        {{ lesson.status|capitalize }}
+                    </span>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="card-body">
-      <p><strong>Phase 1:</strong></p>
-      <p>{{ lesson.phase1 }}</p>
+    <!-- Lesson Details -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white fw-bold">Lesson Details</div>
+        <div class="card-body">
 
-      <hr>
+            <div class="mb-3"><strong>Lesson Title:</strong><br>{{ lesson.lesson_title }}</div>
+            <div class="mb-3"><strong>Strand:</strong><br>{{ lesson.strand or '—' }}</div>
+            <div class="mb-3"><strong>Sub-Strand:</strong><br>{{ lesson.sub_strand or '—' }}</div>
+            <div class="mb-3"><strong>Indicator Code:</strong><br>{{ lesson.indicator_code or '—' }}</div>
+            <div class="mb-3"><strong>Content Standard Code:</strong><br>{{ lesson.content_standard_code or '—' }}</div>
+            <div class="mb-3"><strong>Performance Indicator:</strong><br>{{ lesson.performance_indicator or '—' }}</div>
+            <div class="mb-3"><strong>Core Competencies:</strong><br>{{ lesson.core_competencies or '—' }}</div>
+            <div class="mb-3"><strong>Keywords:</strong><br>{{ lesson.keywords or '—' }}</div>
+            <div class="mb-3"><strong>Teaching & Learning Resources (TLR):</strong><br>{{ lesson.tlr or '—' }}</div>
+            <div class="mb-3"><strong>Reference:</strong><br>{{ lesson.reference or '—' }}</div>
+            <div class="mb-3"><strong>Class Size:</strong><br>{{ lesson.class_size or '—' }}</div>
+            <div class="mb-3"><strong>Day:</strong><br>{{ lesson.day or '—' }}</div>
+            <div class="mb-3"><strong>Period:</strong><br>{{ lesson.period or '—' }}</div>
 
-      <p><strong>Phase 2:</strong></p>
-      <p>{{ lesson.phase2 }}</p>
-
-      <hr>
-
-      <p><strong>Phase 3:</strong></p>
-      <p>{{ lesson.phase3 }}</p>
+        </div>
     </div>
-  </div>
 
-  <!-- Review Form -->
-  <div class="card shadow-sm">
-    <div class="card-header bg-success text-white">
-      Headmaster Review
+    <!-- Lesson Content Phases -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-success text-white fw-bold">Lesson Content</div>
+        <div class="card-body">
+            <div class="mb-3"><strong>Phase 1 (Starter):</strong><br>{{ lesson.phase1 or '—' }}</div>
+            <div class="mb-3"><strong>Phase 2 (Main):</strong><br>{{ lesson.phase2 or '—' }}</div>
+            <div class="mb-3"><strong>Phase 3 (Reflections):</strong><br>{{ lesson.phase3 or '—' }}</div>
+        </div>
     </div>
 
-    <div class="card-body">
-      <form method="POST">
+    <!-- Teaching Details -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-secondary text-white fw-bold">Teaching Details</div>
+        <div class="card-body">
+            <div class="mb-3"><strong>Teaching & Learning Materials:</strong><br>{{ lesson.materials or '—' }}</div>
+            <div class="mb-3"><strong>Assessment / Evaluation:</strong><br>{{ lesson.assessment or '—' }}</div>
+        </div>
+    </div>
 
+    <!-- Headmaster Feedback -->
+    <form method="POST">
         <div class="mb-3">
-          <label class="form-label">Headmaster Remarks</label>
-          <textarea name="remark" class="form-control" rows="3"></textarea>
+            <label class="form-label fw-bold">Headmaster Remark</label>
+            <textarea name="remark" class="form-control" rows="4"
+                      placeholder="Optional feedback to the teacher">{{ lesson.feedback or '' }}</textarea>
         </div>
 
-        <div class="d-flex justify-content-between">
-          <a href="{{ url_for('headmaster_submitted_lessons') }}" class="btn btn-secondary">
-            Back
-          </a>
-
-          <div>
-            <button name="action" value="approve" class="btn btn-success me-2">
-              Approve
-            </button>
-            <button name="action" value="reject" class="btn btn-danger">
-              Reject
-            </button>
-          </div>
+        <div class="d-flex gap-2">
+            <button type="submit" name="action" value="approve" class="btn btn-success px-4">✅ Approve Lesson</button>
+            <button type="submit" name="action" value="reject" class="btn btn-danger px-4">❌ Reject Lesson</button>
+            <a href="{{ url_for('headmaster_dashboard') }}" class="btn btn-secondary ms-auto">Back</a>
         </div>
-
-      </form>
-    </div>
-  </div>
+    </form>
 
 </div>
-
-</body>
-</html>
+{% endblock %}

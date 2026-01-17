@@ -1,80 +1,163 @@
 {% extends "base.html" %}
-
 {% block title %}View Lesson{% endblock %}
 
 {% block content %}
+<div class="container mt-5">
+    <h3 class="mb-4">View Lesson</h3>
 
-<div class="card shadow-sm">
-    <div class="card-header bg-secondary text-white">
-        <h5 class="mb-0">{{ lesson.lesson_title }}</h5>
+    {# ✅ STEP 3.2 — HEADMASTER REVIEW RESULT (NEW BLOCK) #}
+    {% if lesson.status != 'pending' %}
+    <div class="alert alert-info mb-4">
+        <p class="mb-1">
+            <strong>Status:</strong>
+            <span class="badge bg-success">
+                {{ lesson.status|capitalize }}
+            </span>
+        </p>
+
+        {% if lesson.approved_by %}
+        <p class="mb-1">
+            <strong>Reviewed By:</strong> {{ lesson.approved_by }}
+        </p>
+        {% endif %}
+
+        {% if lesson.approval_date %}
+        <p class="mb-2">
+            <strong>Date:</strong>
+            {{ lesson.approval_date.strftime('%d %b %Y, %H:%M') }}
+        </p>
+        {% endif %}
+
+        {% if lesson.feedback %}
+        <div class="mt-2">
+            <strong>Headmaster Feedback:</strong>
+            <div class="border rounded p-2 bg-light">
+                {{ lesson.feedback }}
+            </div>
+        </div>
+        {% endif %}
     </div>
+    {% endif %}
 
-    <div class="card-body">
+    <div class="card shadow">
+        <div class="card-body">
 
-        <!-- BASIC INFO -->
-        <div class="row mb-3">
-            <div class="col-md-3"><strong>Subject:</strong> {{ lesson.subject }}</div>
-            <div class="col-md-3"><strong>Class:</strong> {{ lesson.class_name }}</div>
-            <div class="col-md-3"><strong>Week Ending:</strong> {{ lesson.week_ending }}</div>
-            <div class="col-md-3"><strong>Lesson Date:</strong> {{ lesson.lesson_date.strftime('%d %b %Y') }}</div>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Date</label>
+                    <input type="date" class="form-control"
+                           value="{{ lesson.lesson_date }}" readonly>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Week Ending</label>
+                    <input type="date" class="form-control"
+                           value="{{ lesson.week_ending }}" readonly>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Class</label>
+                    <select class="form-select" disabled>
+                        <option selected>{{ lesson.class_name }}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Subject</label>
+                <input type="text" class="form-control"
+                       value="{{ lesson.subject }}" readonly>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Lesson Title</label>
+                <input type="text" class="form-control"
+                       value="{{ lesson.lesson_title }}" readonly>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Strand</label>
+                <input type="text" class="form-control"
+                       value="{{ lesson.strand }}" readonly>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Sub-Strand</label>
+                <input type="text" class="form-control"
+                       value="{{ lesson.sub_strand }}" readonly>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Indicator Code</label>
+                <input type="text" class="form-control"
+                       value="{{ lesson.indicator_code or '' }}" readonly>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Content Standard Code</label>
+                <input type="text" class="form-control"
+                       value="{{ lesson.content_standard_code or '' }}" readonly>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Performance Indicator</label>
+                <textarea class="form-control" rows="3" readonly>
+{{ lesson.performance_indicator or '—' }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Core Competencies</label>
+                <textarea class="form-control" rows="2" readonly>
+{{ lesson.core_competencies or '—' }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Keywords</label>
+                <input type="text" class="form-control"
+                       value="{{ lesson.keywords }}" readonly>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">
+                    Teaching & Learning Resources (TLR)
+                </label>
+                <textarea class="form-control" rows="2" readonly>
+{{ lesson.tlr or '—' }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Reference</label>
+                <input type="text" class="form-control"
+                       value="{{ lesson.reference }}" readonly>
+            </div>
+
+            <!-- Phases -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">Phase 1 (Starter)</label>
+                <textarea class="form-control" rows="3" readonly>
+{{ lesson.phase1 or '—' }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Phase 2 (Main)</label>
+                <textarea class="form-control" rows="3" readonly>
+{{ lesson.phase2 or '—' }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Phase 3 (Reflections)</label>
+                <textarea class="form-control" rows="3" readonly>
+{{ lesson.phase3 or '—' }}</textarea>
+            </div>
+
+            <a href="{{ url_for('teacher_dashboard') }}"
+               class="btn btn-secondary">
+                Back to Dashboard
+            </a>
+            <a href="{{ url_for('teacher_export_pdf', lesson_id=lesson.id) }}" 
+   class="btn btn-sm btn-secondary mb-2">
+   Export PDF
+</a>
+
         </div>
-
-        <div class="row mb-3">
-            <div class="col-md-4"><strong>Class Size:</strong> {{ lesson.class_size }}</div>
-            <div class="col-md-4"><strong>Day:</strong> {{ lesson.day }}</div>
-            <div class="col-md-4"><strong>Period:</strong> {{ lesson.period }}</div>
-        </div>
-
-        <hr>
-
-        <!-- CURRICULUM INFORMATION -->
-        <h6>Curriculum Information</h6>
-        <p><strong>Strand:</strong> {{ lesson.strand }}</p>
-        <p><strong>Sub Strand:</strong> {{ lesson.sub_strand }}</p>
-        <p><strong>Indicator Code:</strong> {{ lesson.indicator_code }}</p>
-        <p><strong>Content Standard:</strong> {{ lesson.content_standard_code }}</p>
-        <p><strong>Performance Indicator:</strong> {{ lesson.performance_indicator }}</p>
-
-        <hr>
-
-        <!-- TEACHING & LEARNING RESOURCES -->
-        <h6>Teaching & Learning Resources</h6>
-        <p><strong>Core Competencies:</strong> {{ lesson.core_competencies }}</p>
-        <p><strong>Keywords:</strong> {{ lesson.keywords }}</p>
-        <p><strong>TLR:</strong> {{ lesson.tlr }}</p>
-        <p><strong>Reference:</strong> {{ lesson.reference }}</p>
-
-        <hr>
-
-        <!-- LESSON PHASES -->
-        <h6>Lesson Phases</h6>
-
-        <div class="mb-3">
-            <span class="badge bg-primary">Starter</span>
-            <p class="mt-2">{{ lesson.phase1 }}</p>
-        </div>
-
-        <div class="mb-3">
-            <span class="badge bg-success">Main</span>
-            <p class="mt-2">{{ lesson.phase2 }}</p>
-        </div>
-
-        <div class="mb-3">
-            <span class="badge bg-warning text-dark">Plenary</span>
-            <p class="mt-2">{{ lesson.phase3 }}</p>
-        </div>
-
-    </div>
-
-    <div class="card-footer text-end">
-        <a href="{{ url_for('export_lesson', lesson_id=lesson.id) }}" 
-           class="btn btn-outline-primary" target="_blank">
-            Export PDF
-        </a>
-        <a href="javascript:window.print()" class="btn btn-outline-secondary">
-            Print
-        </a>
     </div>
 </div>
-
 {% endblock %}
