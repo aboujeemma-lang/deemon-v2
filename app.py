@@ -8,7 +8,6 @@ from werkzeug.security import generate_password_hash
 from datetime import datetime, date
 from xhtml2pdf import pisa
 from flask import make_response
-from weasyprint import HTML
 from io import BytesIO
 from flask import send_file
 from reportlab.pdfgen import canvas
@@ -28,6 +27,8 @@ from sqlalchemy.engine import Engine
 import sqlite3
 import os
 
+
+### from weasyprint import HTML
 # --------------------
 # APP CONFIG
 # --------------------
