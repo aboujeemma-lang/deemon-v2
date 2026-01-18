@@ -8,34 +8,52 @@
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Optional Bootstrap Icons -->
+    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 
-    <!-- Custom CSS -->
     <style>
         body {
             background-color: #f8f9fa;
         }
+
         .navbar-brand {
             font-weight: 700;
-            font-size: 1.4rem;
+            font-size: 1.3rem;
         }
+
         .card {
             border-radius: 12px;
             box-shadow: 0 0 15px rgba(0,0,0,0.05);
         }
-        .btn-rounded {
-            border-radius: 50px;
-        }
-        .table th, .table td {
-            vertical-align: middle;
-        }
+
         footer {
-            margin-top: 50px;
+            margin-top: 60px;
             padding: 20px 0;
             background: #343a40;
             color: #fff;
             text-align: center;
+        }
+
+        /* ===== Flash Messages ===== */
+        .flash-container {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 1055;
+            width: 100%;
+            max-width: 380px;
+        }
+
+        .flash-container .alert {
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 576px) {
+            .flash-container {
+                left: 10px;
+                right: 10px;
+                max-width: none;
+            }
         }
     </style>
 </head>
@@ -45,6 +63,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
     <div class="container-fluid">
         <a class="navbar-brand" href="{{ url_for('home') }}">Lesson System</a>
+
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -55,14 +74,14 @@
                     <li class="nav-item">
                         <span class="nav-link text-light">Hello, {{ session['name'] }}</span>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link btn btn-outline-light btn-sm btn-rounded ms-2" href="{{ url_for('logout') }}">
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-outline-light btn-sm" href="{{ url_for('logout') }}">
                             <i class="bi bi-box-arrow-right"></i> Logout
                         </a>
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <a class="nav-link btn btn-outline-light btn-sm btn-rounded" href="{{ url_for('login') }}">
+                        <a class="btn btn-outline-light btn-sm" href="{{ url_for('login') }}">
                             <i class="bi bi-box-arrow-in-right"></i> Login
                         </a>
                     </li>
@@ -73,31 +92,30 @@
 </nav>
 
 <!-- ================= Flash Messages ================= -->
-<div class="container mt-4">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="flash-container">
+    {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show shadow" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
 </div>
+{% endif %}
+{% endwith %}
 
 <!-- ================= Main Content ================= -->
-<div class="container mt-3 mb-5">
-    {% block content %}
-    {% endblock %}
+<div class="container mt-4 mb-5">
+    {% block content %}{% endblock %}
 </div>
 
 <!-- ================= Footer ================= -->
 <footer>
-    &copy; *3-24* {{ datetime.utcnow().year }} Lesson System. All rights reserved.
+    &copy; {{ datetime.utcnow().year }} Lesson System. All rights reserved.
 </footer>
 
-<!-- ================= Bootstrap JS ================= -->
+<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
