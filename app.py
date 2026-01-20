@@ -25,16 +25,27 @@ from datetime import datetime
 from flask import Flask
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
+from flask_login import LoginManager
+from extensions import db, migrate
 import sqlite3
 import os
+
+
 
 # --------------------
 # APP CONFIG
 # --------------------
+
 app = Flask(__name__)
+
+# ================= CONFIG =================
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key")
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db?check_same_thread=False'
-db = SQLAlchemy(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# ================= INIT EXTENSIONS =================
+db.init_app(app)
+migrate.init_app(app, db)
 
 login_manager = LoginManager()
 login_manager.login_view = 'login'
@@ -106,6 +117,53 @@ class Lesson(db.Model):
     approval_date = db.Column(db.DateTime, nullable=True)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
 
+class YearlyScheme(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    teacher_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+    class_name = db.Column(db.String(50), nullable=False)
+    subject = db.Column(db.String(100), nullable=False)
+    academic_year = db.Column(db.String(20), nullable=False)
+    week = db.Column(db.String(20), nullable=False)
+
+    term1 = db.Column(db.Text)
+    term2 = db.Column(db.Text)
+    term3 = db.Column(db.Text)
+
+    vetted_by = db.Column(db.String(100), default="Pending")
+    vetted_date = db.Column(db.DateTime)
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    status = db.Column(db.String(20), default='pending')  # pending | approved | rejected
+    feedback = db.Column(db.Text)
+    teacher = db.relationship('User', backref='yearly_schemes')
+
+    __table_args__ = (
+        db.UniqueConstraint(
+            'teacher_id', 'class_name', 'subject', 'academic_year',
+            name='unique_yearly_scheme'
+        ),
+    )
+
+class TermlyScheme(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    teacher_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+    week = db.Column(db.String(20), nullable=False)
+    strand = db.Column(db.Text)
+    sub_strand = db.Column(db.Text)
+    content_standard = db.Column(db.Text)
+    indicator = db.Column(db.Text)
+    resources = db.Column(db.Text)
+
+    vetted_by = db.Column(db.String(100), default="Pending")
+    vetted_date = db.Column(db.DateTime)
+    teacher = db.relationship('User', backref='termly_schemes')
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    status = db.Column(db.String(20), default='pending')  # pending | approved | rejected
+    feedback = db.Column(db.Text)
+     
+
 
 # --------------------
 # LOGIN MANAGER
@@ -140,6 +198,308 @@ def create_super_admin():
 @app.context_processor
 def inject_datetime():
     return {'datetime': datetime}
+
+@app.route('/teacher/schemes', methods=['GET', 'POST'])
+@login_required
+def teacher_schemes():
+
+    if current_user.role != 'teacher':
+        flash('Unauthorized access!', 'danger')
+        return redirect(url_for('login'))
+
+    yearly_schemes = YearlyScheme.query.filter_by(
+        teacher_id=current_user.id
+    ).order_by(YearlyScheme.week).all()
+
+    termly_schemes = TermlyScheme.query.filter_by(
+        teacher_id=current_user.id
+    ).order_by(TermlyScheme.week).all()
+
+    return render_template(
+        'teacher_schemes.html',
+        yearly_schemes=yearly_schemes,
+        termly_schemes=termly_schemes
+    )
+
+@app.route('/headmaster/termly-scheme/<int:id>', methods=['GET'])
+@login_required
+def headmaster_view_termly_scheme(id):
+
+    if current_user.role != 'headmaster':
+        flash('Unauthorized access!', 'danger')
+        return redirect(url_for('login'))
+
+    scheme = TermlyScheme.query.get_or_404(id)
+
+    teacher = User.query.get(scheme.teacher_id)
+
+    return render_template(
+        'headmaster_view_termly_scheme.html',
+        scheme=scheme,
+        teacher=teacher
+    )
+
+@app.route('/teacher/yearly-scheme/<int:id>/view')
+@login_required
+def view_yearly_scheme(id):
+    scheme = YearlyScheme.query.get_or_404(id)
+
+    if scheme.teacher_id != current_user.id:
+        abort(403)
+
+    return render_template(
+        'view_yearly_scheme.html',
+        scheme=scheme
+        readonly=True
+    )
+
+@app.route('/teacher/termly-scheme/<int:id>/view')
+@login_required
+def view_termly_scheme(id):
+    scheme = TermlyScheme.query.get_or_404(id)
+
+    if scheme.teacher_id != current_user.id:
+        abort(403)
+
+    return render_template(
+        'view_termly_scheme.html',
+        scheme=scheme
+        readonly=True
+        
+    )
+
+@app.route('/headmaster/termly-scheme/<int:id>/vet', methods=['POST'])
+@login_required
+def vet_termly_scheme(id):
+
+    if current_user.role != 'headmaster':
+        flash('Unauthorized access!', 'danger')
+        return redirect(url_for('login'))
+
+    scheme = TermlyScheme.query.get_or_404(id)
+
+    action = request.form.get('action')
+    feedback = request.form.get('feedback')
+
+    if action == 'approve':
+        scheme.status = 'approved'
+        scheme.vetted_by = current_user.name
+        scheme.vetted_date = datetime.utcnow()
+
+    elif action == 'reject':
+        scheme.status = 'rejected'
+        scheme.vetted_by = current_user.name
+        scheme.vetted_date = datetime.utcnow()
+        scheme.feedback = feedback
+
+    db.session.commit()
+
+    flash('Termly scheme reviewed successfully.', 'success')
+    return redirect(url_for('headmaster_schemes'))
+
+@app.route('/teacher/yearly-scheme/create', methods=['POST'])
+@login_required
+def create_yearly_scheme():
+
+    existing = YearlyScheme.query.filter_by(
+        teacher_id=current_user.id,
+        class_name=request.form['class_name'],
+        subject=request.form['subject'],
+        academic_year=request.form['academic_year']
+    ).first()
+
+    if existing:
+        flash('Yearly scheme already exists for this class, subject and year.', 'warning')
+        return redirect(url_for('teacher_schemes'))
+
+    scheme = YearlyScheme(
+        teacher_id=current_user.id,
+        class_name=request.form['class_name'],
+        subject=request.form['subject'],
+        academic_year=request.form['academic_year'],
+        week=request.form['week'],
+        term1=request.form['term1'],
+        term2=request.form['term2'],
+        term3=request.form['term3']
+    )
+
+    db.session.add(scheme)
+    db.session.commit()
+
+    flash('Yearly scheme saved successfully.', 'success')
+    return redirect(url_for('teacher_schemes'))
+
+@app.route('/teacher/termly-scheme/create', methods=['POST'])
+@login_required
+def create_termly_scheme():
+
+    if current_user.role != 'teacher':
+        flash('Unauthorized access!', 'danger')
+        return redirect(url_for('login'))
+
+    scheme = TermlyScheme(
+        teacher_id=current_user.id,
+        week=request.form['week'],
+        strand=request.form.get('strand'),
+        sub_strand=request.form.get('sub_strand'),
+        content_standard=request.form.get('content_standard'),
+        indicator=request.form.get('indicator'),
+        resources=request.form.get('resources')
+    )
+
+    db.session.add(scheme)
+    db.session.commit()
+
+    flash('Termly scheme saved successfully.', 'success')
+    return redirect(url_for('teacher_schemes'))
+
+@app.route('/teacher/termly-scheme/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_termly_scheme(id):
+    scheme = TermlyScheme.query.get_or_404(id)
+
+    if scheme.teacher_id != current_user.id:
+        flash('Unauthorized access!', 'danger')
+        return redirect(url_for('teacher_schemes'))
+
+    if scheme.status != 'pending':
+        flash('Approved schemes cannot be edited.', 'warning')
+        return redirect(url_for('teacher_schemes'))
+
+    if request.method == 'POST':
+        scheme.week = request.form['week']
+        scheme.strand = request.form.get('strand')
+        scheme.sub_strand = request.form.get('sub_strand')
+        scheme.content_standard = request.form.get('content_standard')
+        scheme.indicator = request.form.get('indicator')
+        scheme.resources = request.form.get('resources')
+
+        db.session.commit()
+        flash('Termly scheme updated.', 'success')
+        return redirect(url_for('teacher_schemes'))
+
+    return render_template('edit_termly_scheme.html', scheme=scheme)
+
+@app.route('/teacher/termly-scheme/delete/<int:id>')
+@login_required
+def delete_termly_scheme(id):
+    scheme = TermlyScheme.query.get_or_404(id)
+
+    if scheme.teacher_id != current_user.id:
+        flash('Unauthorized access!', 'danger')
+        return redirect(url_for('teacher_schemes'))
+
+    if scheme.status != 'pending':
+        flash('Approved schemes cannot be deleted.', 'warning')
+        return redirect(url_for('teacher_schemes'))
+
+    db.session.delete(scheme)
+    db.session.commit()
+
+    flash('Termly scheme deleted.', 'success')
+    return redirect(url_for('teacher_schemes'))
+
+@app.route('/headmaster/termly-scheme/approve/<int:id>')
+@login_required
+def approve_termly_scheme(id):
+    scheme = TermlyScheme.query.get_or_404(id)
+
+    scheme.status = 'approved'
+    scheme.vetted_by = current_user.name
+    scheme.vetted_date = datetime.utcnow()
+
+    db.session.commit()
+    flash('Termly scheme approved.', 'success')
+    return redirect(url_for('headmaster_schemes'))
+
+@app.route('/headmaster/termly-scheme/reject/<int:id>', methods=['POST'])
+@login_required
+def reject_termly_scheme(id):
+    scheme = TermlyScheme.query.get_or_404(id)
+
+    scheme.status = 'rejected'
+    scheme.vetted_by = current_user.name
+    scheme.vetted_date = datetime.utcnow()
+    scheme.feedback = request.form.get('feedback')
+
+    db.session.commit()
+    flash('Termly scheme rejected.', 'danger')
+    return redirect(url_for('headmaster_schemes'))
+
+
+@app.route('/headmaster/schemes')
+@login_required
+def headmaster_schemes():
+
+    if current_user.role != 'headmaster':
+        flash('Unauthorized access!', 'danger')
+        return redirect(url_for('login'))
+
+    yearly_schemes = YearlyScheme.query.order_by(
+        YearlyScheme.created_at.desc()
+    ).all()
+
+    termly_schemes = TermlyScheme.query.order_by(
+        TermlyScheme.created_at.desc()
+    ).all()
+
+    return render_template(
+        'headmaster_schemes.html',
+        yearly_schemes=yearly_schemes,
+        termly_schemes=termly_schemes
+    )
+
+
+@app.route('/headmaster/yearly-scheme/<int:id>/vet', methods=['POST'])
+@login_required
+def vet_yearly_scheme(id):
+    scheme = YearlyScheme.query.get_or_404(id)
+
+    action = request.form.get('action')
+    feedback = request.form.get('feedback')
+
+    if action == 'approve':
+        scheme.status = 'approved'
+    elif action == 'reject':
+        scheme.status = 'rejected'
+
+    scheme.feedback = feedback
+    scheme.vetted_by = session.get('name')
+    scheme.vetted_date = datetime.utcnow()
+
+    db.session.commit()
+
+    flash('Scheme vetting completed.', 'success')
+    return redirect(url_for('headmaster_schemes'))
+
+@app.route('/headmaster/scheme/<int:id>/approve')
+@login_required
+def approve_scheme(id):
+
+    scheme = YearlyScheme.query.get_or_404(id)
+
+    scheme.status = 'approved'
+    scheme.vetted_by = current_user.name
+    scheme.vetted_date = datetime.utcnow()
+
+    db.session.commit()
+    flash('Scheme approved successfully.', 'success')
+    return redirect(url_for('headmaster_schemes'))
+
+@app.route('/headmaster/scheme/<int:id>/reject', methods=['POST'])
+@login_required
+def reject_scheme(id):
+
+    scheme = YearlyScheme.query.get_or_404(id)
+
+    scheme.status = 'rejected'
+    scheme.feedback = request.form['feedback']
+    scheme.vetted_by = current_user.name
+    scheme.vetted_date = datetime.utcnow()
+
+    db.session.commit()
+    flash('Scheme rejected.', 'warning')
+    return redirect(url_for('headmaster_schemes'))
 
 
 @app.route('/')

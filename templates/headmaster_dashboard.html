@@ -19,6 +19,13 @@
                 Lessons
             </button>
         </li>
+
+        <!-- ✅ ADDED: Schemes Tab -->
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="schemes-tab" data-bs-toggle="tab" data-bs-target="#schemes" type="button" role="tab">
+                Schemes
+            </button>
+        </li>
     </ul>
 
     <div class="tab-content">
@@ -165,6 +172,29 @@
 
                 </div>
             </div>
+        </div>
+
+        <!-- ✅ ADDED: Schemes Tab Content -->
+        <div class="tab-pane fade" id="schemes" role="tabpanel">
+
+            <div class="card shadow">
+                <div class="card-header bg-dark text-white text-center text-md-start">
+                    Schemes of Learning (Approval)
+                </div>
+                <div class="card-body text-center">
+
+                    <p class="mb-3 text-muted">
+                        Review and approve submitted yearly and termly schemes.
+                    </p>
+
+                    <a href="{{ url_for('headmaster_schemes') }}"
+                       class="btn btn-primary w-100">
+                        View Submitted Schemes
+                    </a>
+
+                </div>
+            </div>
+
         </div>
 
     </div>
