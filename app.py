@@ -249,7 +249,7 @@ def view_yearly_scheme(id):
 
     return render_template(
         'view_yearly_scheme.html',
-        scheme=scheme
+        scheme=scheme,
         readonly=True
     )
 
@@ -263,7 +263,7 @@ def view_termly_scheme(id):
 
     return render_template(
         'view_termly_scheme.html',
-        scheme=scheme
+        scheme=scheme,
         readonly=True
         
     )
