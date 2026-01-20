@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% block title %}Scheme Vetting{% endblock %}
+
+{% block content %}
+<h3 class="mb-4">Scheme Vetting</h3>
+
+<ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#yearly">
+            Yearly Schemes
+        </button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#termly">
+            Termly Schemes
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content">
+
+    <!-- ================= YEARLY SCHEMES ================= -->
+    <div class="tab-pane fade show active" id="yearly">
+        <div class="card shadow-sm">
+            <div class="card-header bg-secondary text-white">
+                Yearly Schemes
+            </div>
+            <div class="card-body">
+
+                {% if yearly_schemes %}
+                <div class="table-responsive">
+                    <table class="table table-bordered align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Teacher</th>
+                                <th>Class</th>
+                                <th>Subject</th>
+                                <th>Year</th>
+                                <th>Status</th>
+                                <th>Vetting</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for scheme in yearly_schemes %}
+                            <tr>
+                                <td>{{ scheme.teacher.name }}</td>
+                                <td>{{ scheme.class_name }}</td>
+                                <td>{{ scheme.subject }}</td>
+                                <td>{{ scheme.academic_year }}</td>
+
+                                <!-- STATUS BADGE -->
+                                <td>
+                                    {% if scheme.status == 'pending' %}
+                                        <span class="badge bg-warning text-dark">Pending</span>
+                                    {% elif scheme.status == 'approved' %}
+                                        <span class="badge bg-success">Approved</span>
+                                    {% elif scheme.status == 'rejected' %}
+                                        <span class="badge bg-danger">Rejected</span>
+                                    {% endif %}
+                                </td>
+
+                                <!-- VETTING ACTION -->
+                                <td>
+                                    {% if scheme.status == 'pending' %}
+                                    <form method="POST"
+                                          action="{{ url_for('vet_yearly_scheme', id=scheme.id) }}">
+                                        <textarea name="feedback"
+                                                  class="form-control mb-2"
+                                                  rows="2"
+                                                  placeholder="Feedback"
+                                                  required></textarea>
+
+                                        <button name="action" value="approve"
+                                                class="btn btn-sm btn-success mb-1 w-100">
+                                            Approve
+                                        </button>
+
+                                        <button name="action" value="reject"
+                                                class="btn btn-sm btn-danger w-100">
+                                            Reject
+                                        </button>
+                                    </form>
+                                    {% else %}
+                                        <span class="text-muted">Reviewed</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                    <p class="text-muted">No yearly schemes submitted.</p>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= TERMLY SCHEMES ================= -->
+    <div class="tab-pane fade" id="termly">
+        <div class="card shadow-sm">
+            <div class="card-header bg-secondary text-white">
+                Termly Schemes
+            </div>
+            <div class="card-body">
+
+                {% if termly_schemes %}
+                <div class="table-responsive">
+                    <table class="table table-bordered align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Teacher</th>
+                                <th>Class</th>
+                                <th>Subject</th>
+                                <th>Term</th>
+                                <th>Status</th>
+                                <th>Vetting</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for scheme in termly_schemes %}
+                            <tr>
+                                <td>{{ scheme.teacher.name }}</td>
+                                <td>{{ scheme.class_name }}</td>
+                                <td>{{ scheme.subject }}</td>
+                                <td>{{ scheme.term }}</td>
+
+                                <td>
+    {% if scheme.status == 'pending' %}
+        <a href="{{ url_for('approve_termly_scheme', id=scheme.id) }}"
+           class="btn btn-sm btn-success mb-1">Approve</a>
+
+        <form method="POST"
+              action="{{ url_for('reject_termly_scheme', id=scheme.id) }}"
+              class="d-inline">
+            <input type="text" name="feedback" class="form-control form-control-sm mb-1"
+                   placeholder="Reason (optional)">
+            <button class="btn btn-sm btn-danger">Reject</button>
+        </form>
+    {% else %}
+        <span class="text-muted">Reviewed</span>
+    {% endif %}
+</td>
+
+                                <td>
+    {% if scheme.status == 'pending' %}
+        <a href="{{ url_for('headmaster_view_termly_scheme', id=scheme.id) }}"
+           class="btn btn-sm btn-primary w-100">
+            Review
+        </a>
+    {% else %}
+        <span class="text-muted">Reviewed</span>
+    {% endif %}
+</td>
+
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                    <p class="text-muted">No termly schemes submitted.</p>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

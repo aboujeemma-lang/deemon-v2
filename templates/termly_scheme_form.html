@@ -1,0 +1,83 @@
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white">
+        {% if scheme is defined %}
+            View Termly Scheme of Learning
+        {% else %}
+            Create Termly Scheme of Learning
+        {% endif %}
+    </div>
+
+    <div class="card-body">
+        <form method="POST"
+              {% if scheme is defined %}
+                  action="#"
+              {% else %}
+                  action="{{ url_for('create_termly_scheme') }}"
+              {% endif %}>
+
+            <div class="row g-3">
+
+                <div class="col-md-3">
+                    <label class="form-label">Week</label>
+                    <input type="text"
+                           name="week"
+                           class="form-control"
+                           value="{{ scheme.week if scheme is defined else '' }}"
+                           {% if readonly %}disabled{% endif %}
+                           required>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Strand</label>
+                    <input type="text"
+                           name="strand"
+                           class="form-control"
+                           value="{{ scheme.strand if scheme is defined else '' }}"
+                           {% if readonly %}disabled{% endif %}>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Sub-Strand</label>
+                    <input type="text"
+                           name="sub_strand"
+                           class="form-control"
+                           value="{{ scheme.sub_strand if scheme is defined else '' }}"
+                           {% if readonly %}disabled{% endif %}>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Content Standard</label>
+                    <input type="text"
+                           name="content_standard"
+                           class="form-control"
+                           value="{{ scheme.content_standard if scheme is defined else '' }}"
+                           {% if readonly %}disabled{% endif %}>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Indicator</label>
+                    <textarea name="indicator"
+                              class="form-control"
+                              rows="2"
+                              {% if readonly %}disabled{% endif %}>{{ scheme.indicator if scheme is defined else '' }}</textarea>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Resources</label>
+                    <textarea name="resources"
+                              class="form-control"
+                              rows="2"
+                              {% if readonly %}disabled{% endif %}>{{ scheme.resources if scheme is defined else '' }}</textarea>
+                </div>
+
+            </div>
+
+            {% if scheme is not defined %}
+                <button class="btn btn-success mt-3">
+                    Save Termly Scheme
+                </button>
+            {% endif %}
+
+        </form>
+    </div>
+</div>

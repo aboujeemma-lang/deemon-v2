@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}View Termly Scheme{% endblock %}
+
+{% block content %}
+<h4 class="mb-3">Termly Scheme (Read-Only)</h4>
+
+{% include "termly_scheme_form.html" %}
+
+<script>
+document.querySelectorAll("input, textarea, select").forEach(el => {
+    el.setAttribute("disabled", true);
+});
+</script>
+{% endblock %}

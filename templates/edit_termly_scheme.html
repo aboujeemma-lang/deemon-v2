@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Edit Termly Scheme{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+        Edit Termly Scheme
+    </div>
+    <div class="card-body">
+
+        <form method="POST">
+            <div class="row g-3">
+
+                <div class="col-md-3">
+                    <label class="form-label">Week</label>
+                    <input type="text" name="week" value="{{ scheme.week }}" class="form-control" required>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Strand</label>
+                    <input type="text" name="strand" value="{{ scheme.strand }}" class="form-control">
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Sub-Strand</label>
+                    <input type="text" name="sub_strand" value="{{ scheme.sub_strand }}" class="form-control">
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Content Standard</label>
+                    <input type="text" name="content_standard" value="{{ scheme.content_standard }}" class="form-control">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Indicator</label>
+                    <textarea name="indicator" class="form-control">{{ scheme.indicator }}</textarea>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Resources</label>
+                    <textarea name="resources" class="form-control">{{ scheme.resources }}</textarea>
+                </div>
+
+            </div>
+
+            <button class="btn btn-success mt-3">Update</button>
+            <a href="{{ url_for('teacher_schemes') }}" class="btn btn-secondary mt-3">Cancel</a>
+        </form>
+
+    </div>
+</div>
+{% endblock %}

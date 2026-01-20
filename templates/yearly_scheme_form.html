@@ -1,0 +1,91 @@
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        {% if scheme is defined %}
+            View Yearly Scheme
+        {% else %}
+            Create Yearly Scheme
+        {% endif %}
+    </div>
+
+    <div class="card-body">
+
+        <form method="POST"
+              {% if scheme is defined %}
+                  action="#"
+              {% else %}
+                  action="{{ url_for('create_yearly_scheme') }}"
+              {% endif %}>
+
+            <div class="row mb-3">
+                <div class="col">
+                    <label>Class</label>
+                    <input type="text"
+                           name="class_name"
+                           class="form-control"
+                           value="{{ scheme.class_name if scheme is defined else '' }}"
+                           {% if readonly %}disabled{% endif %}
+                           required>
+                </div>
+
+                <div class="col">
+                    <label>Subject</label>
+                    <input type="text"
+                           name="subject"
+                           class="form-control"
+                           value="{{ scheme.subject if scheme is defined else '' }}"
+                           {% if readonly %}disabled{% endif %}
+                           required>
+                </div>
+
+                <div class="col">
+                    <label>Academic Year</label>
+                    <input type="text"
+                           name="academic_year"
+                           class="form-control"
+                           value="{{ scheme.academic_year if scheme is defined else '' }}"
+                           {% if readonly %}disabled{% endif %}
+                           required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label>Week</label>
+                <input type="text"
+                       name="week"
+                       class="form-control"
+                       value="{{ scheme.week if scheme is defined else '' }}"
+                       {% if readonly %}disabled{% endif %}
+                       required>
+            </div>
+
+            <div class="mb-3">
+                <label>Term 1 (Sub-strands)</label>
+                <textarea name="term1"
+                          class="form-control"
+                          {% if readonly %}disabled{% endif %}>{{ scheme.term1 if scheme is defined else '' }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label>Term 2 (Sub-strands)</label>
+                <textarea name="term2"
+                          class="form-control"
+                          {% if readonly %}disabled{% endif %}>{{ scheme.term2 if scheme is defined else '' }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label>Term 3 (Sub-strands)</label>
+                <textarea name="term3"
+                          class="form-control"
+                          {% if readonly %}disabled{% endif %}>{{ scheme.term3 if scheme is defined else '' }}</textarea>
+            </div>
+
+            {% if scheme is not defined %}
+                <button type="submit" class="btn btn-success">
+                    Save Yearly Scheme
+                </button>
+            {% endif %}
+
+        </form>
+
+    </div>
+</div>

@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Review Termly Scheme{% endblock %}
+
+{% block content %}
+<h4 class="mb-4">Review Termly Scheme of Learning</h4>
+
+<div class="card shadow mb-4">
+    <div class="card-header bg-primary text-white">
+        Teacher & Class Info
+    </div>
+    <div class="card-body">
+        <p><strong>Teacher:</strong> {{ teacher.name }}</p>
+        <p><strong>Week:</strong> {{ scheme.week }}</p>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header bg-secondary text-white">
+        Scheme Details
+    </div>
+    <div class="card-body">
+
+        <div class="mb-3">
+            <label class="form-label">Strand</label>
+            <textarea class="form-control" readonly>{{ scheme.strand }}</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Sub Strand</label>
+            <textarea class="form-control" readonly>{{ scheme.sub_strand }}</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Content Standard</label>
+            <textarea class="form-control" readonly>{{ scheme.content_standard }}</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Indicator</label>
+            <textarea class="form-control" readonly>{{ scheme.indicator }}</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Resources</label>
+            <textarea class="form-control" readonly>{{ scheme.resources }}</textarea>
+        </div>
+
+    </div>
+</div>
+
+{% if scheme.status == 'pending' %}
+<div class="card shadow">
+    <div class="card-header bg-warning">
+        Vet Scheme
+    </div>
+    <div class="card-body">
+
+        <form method="POST" action="{{ url_for('vet_termly_scheme', id=scheme.id) }}">
+            <div class="mb-3">
+                <label class="form-label">Feedback (required if rejecting)</label>
+                <textarea name="feedback" class="form-control"></textarea>
+            </div>
+
+            <button name="action" value="approve" class="btn btn-success">
+                Approve
+            </button>
+
+            <button name="action" value="reject" class="btn btn-danger">
+                Reject
+            </button>
+
+            <a href="{{ url_for('headmaster_schemes') }}" class="btn btn-secondary ms-2">
+                Back
+            </a>
+        </form>
+
+    </div>
+</div>
+{% else %}
+<p class="text-muted">This scheme has already been reviewed.</p>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,58 @@
+<div class="card">
+    <div class="card-header bg-secondary text-white">
+        Saved Yearly Schemes
+    </div>
+    <div class="card-body">
+
+        {% if yearly_schemes %}
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Class</th>
+                        <th>Subject</th>
+                        <th>Year</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+    {% for scheme in yearly_schemes %}
+    <tr>
+        <td>{{ scheme.class_name }}</td>
+        <td>{{ scheme.subject }}</td>
+        <td>{{ scheme.academic_year }}</td>
+
+        <td>
+            {% if scheme.status == 'pending' %}
+                <span class="badge bg-warning text-dark">Pending</span>
+            {% elif scheme.status == 'approved' %}
+                <span class="badge bg-success">Approved</span>
+            {% elif scheme.status == 'rejected' %}
+                <span class="badge bg-danger">Rejected</span>
+            {% endif %}
+        </td>
+
+        <td>
+            {% if scheme.status == 'pending' %}
+                <a href="{{ url_for('edit_yearly_scheme', id=scheme.id) }}"
+                   class="btn btn-sm btn-primary">Edit</a>
+
+                <a href="{{ url_for('delete_yearly_scheme', id=scheme.id) }}"
+                   class="btn btn-sm btn-danger"
+                   onclick="return confirm('Are you sure?')">Delete</a>
+            {% else %}
+                <span class="text-muted">Locked</span>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</tbody>
+            </table>
+        </div>
+        {% else %}
+            <p class="text-muted">No yearly schemes yet.</p>
+        {% endif %}
+
+    </div>
+</div>

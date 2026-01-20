@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block title %}Schemes of Learning{% endblock %}
+
+{% block content %}
+<h3 class="mb-4">Schemes of Learning</h3>
+
+<ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#yearly">
+            Yearly Scheme
+        </button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#termly">
+            Termly Scheme
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content">
+
+    <!-- ================= YEARLY ================= -->
+    <div class="tab-pane fade show active" id="yearly">
+
+    {% include "yearly_scheme_form.html" %}
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-secondary text-white">
+            My Yearly Schemes
+        </div>
+        <div class="card-body">
+
+            {% if yearly_schemes %}
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Class</th>
+                            <th>Subject</th>
+                            <th>Academic Year</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for scheme in yearly_schemes %}
+                        <tr>
+                            <td>{{ scheme.class_name }}</td>
+                            <td>{{ scheme.subject }}</td>
+                            <td>{{ scheme.academic_year }}</td>
+
+                            <td>
+                                {% if scheme.status == 'pending' %}
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                {% elif scheme.status == 'approved' %}
+                                    <span class="badge bg-success">Approved</span>
+                                {% elif scheme.status == 'rejected' %}
+                                    <span class="badge bg-danger">Rejected</span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                <a href="{{ url_for('view_yearly_scheme', id=scheme.id) }}"
+                                   class="btn btn-sm btn-outline-secondary">
+                                    View
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+                <p class="text-muted">No yearly schemes yet.</p>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+<!-- ================= TERMLY ================= -->
+<div class="tab-pane fade" id="termly">
+    {% include "termly_scheme_form.html" %}
+    <div class="card shadow-sm">
+        <div class="card-header bg-secondary text-white">
+            My Termly Schemes
+        </div>
+        <div class="card-body">
+
+            {% if termly_schemes %}
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Week</th>
+                            <th>Action</th>
+                            <th>Feedback</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for scheme in termly_schemes %}
+                        <tr>
+                            <td>{{ scheme.week }}</td>
+
+                            <td>
+                                {% if scheme.status == 'pending' %}
+                                    <a href="{{ url_for('edit_termly_scheme', id=scheme.id) }}"
+                                       class="btn btn-sm btn-primary mb-1">
+                                        Edit
+                                    </a>
+
+                                    <a href="{{ url_for('delete_termly_scheme', id=scheme.id) }}"
+                                       class="btn btn-sm btn-danger mb-1"
+                                       onclick="return confirm('Are you sure?')">
+                                        Delete
+                                    </a>
+                                {% endif %}
+
+                                <a href="{{ url_for('view_termly_scheme', id=scheme.id) }}"
+                                   class="btn btn-sm btn-outline-secondary mb-1">
+                                    View
+                                </a>
+                            </td>
+
+                            <td>{{ scheme.feedback or '—' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+                <p class="text-muted">No termly schemes yet.</p>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+</div>
+{% endblock %}
