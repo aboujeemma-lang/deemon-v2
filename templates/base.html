@@ -60,34 +60,33 @@
 <body>
 
 <!-- ================= Navbar ================= -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="{{ url_for('home') }}">Lesson System</a>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <a class="navbar-brand" href="{{ url_for('home') }}">
+            Deemon
+        </a>
+
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-            <ul class="navbar-nav align-items-center">
-                {% if session.get('name') %}
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+
+                {% if current_user.is_authenticated %}
                     <li class="nav-item">
-                        <span class="nav-link text-light">Hello, {{ session['name'] }}</span>
-                    </li>
-                    <li class="nav-item ms-2">
-                        <a class="btn btn-outline-light btn-sm" href="{{ url_for('logout') }}">
-                            <i class="bi bi-box-arrow-right"></i> Logout
-                        </a>
-                    </li>
-                {% else %}
-                    <li class="nav-item">
-                        <a class="btn btn-outline-light btn-sm" href="{{ url_for('login') }}">
-                            <i class="bi bi-box-arrow-in-right"></i> Login
+                        <a class="nav-link" href="{{ url_for('dashboard') }}">
+                            Dashboard
                         </a>
                     </li>
                 {% endif %}
+
             </ul>
         </div>
+
     </div>
 </nav>
 

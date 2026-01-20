@@ -504,35 +504,40 @@ def reject_scheme(id):
 
 @app.route('/')
 def home():
-    return redirect(url_for('login'))
+    if current_user.is_authenticated:
+        if current_user.role == 'teacher':
+            return redirect(url_for('teacher_dashboard'))
+        elif current_user.role == 'headmaster':
+            return redirect(url_for('headmaster_dashboard'))
+        elif current_user.role == 'super_admin':
+            return redirect(url_for('super_admin_dashboard'))
+    return render_template('home.html')
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['POST'])
 def login():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
+    email = request.form['email']
+    password = request.form['password']
 
-        user = User.query.filter_by(email=email).first()
+    user = User.query.filter_by(email=email).first()
 
-        if user and check_password_hash(user.password, password):
-            login_user(user)
-            session['user_id'] = user.id
-            session['role'] = user.role
-            session['name'] = user.name
+    if user and check_password_hash(user.password, password):
+        login_user(user)
+        session['user_id'] = user.id
+        session['role'] = user.role
+        session['name'] = user.name
 
-            flash('Login successful', 'success')
+        flash('Login successful', 'success')
 
-            if user.role == 'super_admin':
-                return redirect(url_for('super_admin_dashboard'))
-            elif user.role == 'headmaster':
-                return redirect(url_for('headmaster_dashboard'))
-            else:
-                return redirect(url_for('teacher_dashboard'))
+        if user.role == 'super_admin':
+            return redirect(url_for('super_admin_dashboard'))
+        elif user.role == 'headmaster':
+            return redirect(url_for('headmaster_dashboard'))
+        else:
+            return redirect(url_for('teacher_dashboard'))
 
-        flash('Invalid email or password', 'danger')
-        return redirect(url_for('login'))
-
-    return render_template('login.html')
+    # ❌ Failed login → return home and reopen modal
+    flash('Invalid email or password', 'danger')
+    return redirect(url_for('home', showLogin=1))
 
 @app.route('/logout')
 @login_required

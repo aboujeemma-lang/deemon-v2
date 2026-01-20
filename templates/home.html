@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}
+Deemon – Digital Education Monitoring & Planning System
+{% endblock %}
+
+{% block content %}
+<div class="container text-center mt-5">
+
+    <!-- LOGO -->
+    <img src="{{ url_for('static', filename='images/deemon-logo.png') }}"
+         alt="Deemon Logo"
+         class="mb-4"
+         width="160">
+
+    <!-- SYSTEM NAME -->
+    <h1 class="fw-bold">Deemon</h1>
+
+    <!-- TAGLINE -->
+    <h5 class="text-muted mb-4">
+        Digital Education Monitoring & Planning System
+    </h5>
+
+    <!-- DESCRIPTION -->
+    <p class="lead mb-4">
+        A centralized platform for teachers and school leadership to plan,
+        submit, review, and monitor schemes of learning efficiently.
+    </p>
+
+    <!-- LOGIN BUTTON -->
+    <button class="btn btn-primary btn-lg"
+            data-bs-toggle="modal"
+            data-bs-target="#loginModal">
+        Login Here
+    </button>
+
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Login to Deemon</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="text-center mb-3">
+                    <img src="{{ url_for('static', filename='images/deemon-logo.png') }}"
+                         alt="Deemon Logo"
+                         width="90">
+                </div>
+
+                <form method="POST" action="{{ url_for('login') }}">
+
+                    <div class="mb-3 text-start">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3 text-start">
+                        <label class="form-label">Password</label>
+                        <input type="password" name="password" class="form-control" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100">
+                        Login
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- AUTO-OPEN LOGIN MODAL -->
+<script>
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("showLogin") === "1") {
+        const loginModal = new bootstrap.Modal(
+            document.getElementById("loginModal")
+        );
+        loginModal.show();
+    }
+</script>
+{% endblock %}
