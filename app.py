@@ -540,11 +540,11 @@ def login():
     return redirect(url_for('home', showLogin=1))
 
 @app.route('/logout')
-@login_required
 def logout():
+    logout_user()
     session.clear()
-    flash('Logged out successfully.', 'success')
-    return redirect(url_for('login'))
+    flash("You have been logged out.", "success")
+    return redirect(url_for('home'))
 
 # --------------------
 # SUPER ADMIN DASHBOARD

@@ -83,19 +83,24 @@
             <ul class="navbar-nav ms-auto">
 
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('home') }}">
-                        Home
-                    </a>
+                    <a class="nav-link" href="{{ url_for('home') }}">Home</a>
                 </li>
 
-                {% if not current_user.is_authenticated %}
-                <li class="nav-item">
-                    <button class="btn btn-primary ms-lg-3"
-                            data-bs-toggle="modal"
-                            data-bs-target="#loginModal">
-                        Login
-                    </button>
-                </li>
+                {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="btn btn-outline-danger ms-lg-3"
+                           href="{{ url_for('logout') }}">
+                            Logout
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <button class="btn btn-primary ms-lg-3"
+                                data-bs-toggle="modal"
+                                data-bs-target="#loginModal">
+                            Login
+                        </button>
+                    </li>
                 {% endif %}
 
             </ul>
