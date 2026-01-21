@@ -5,162 +5,173 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Lesson System{% endblock %}</title>
 
-    <!-- Bootstrap 5 CSS -->
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- Inter Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* ===== Body ===== */
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-            color: #333;
+        :root{
+            --primary:#4b7bec;
+            --primary-dark:#3867d6;
+            --bg:#f8f9fa;
+            --text:#333;
+            --muted:#555;
         }
 
-        /* ===== Navbar ===== */
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 1.3rem;
+        * { box-sizing: border-box; }
+
+        body{
+            margin:0;
+            background:var(--bg);
+            font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+            color:var(--text);
         }
 
-        .navbar .btn {
-            border-radius: 8px;
-            font-weight: 500;
+        /* ===== NAVBAR ===== */
+        .navbar-brand{
+            font-weight:700;
+            font-size:1.25rem;
         }
 
-        /* ===== Cards ===== */
-        .card {
-            border-radius: 14px;
-            border: none;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+        /* ===== BUTTONS ===== */
+        .btn-primary{
+            background:var(--primary);
+            border-color:var(--primary);
+            border-radius:10px;
+            padding:12px 28px;
+            font-weight:500;
+        }
+        .btn-primary:hover{
+            background:var(--primary-dark);
+            border-color:var(--primary-dark);
         }
 
-        .card-header {
-            font-weight: 600;
-            font-size: 1rem;
+        /* ===== HOME (PIXEL-LOCKED DESKTOP) ===== */
+        .home-hero{
+            background:#fff;
+            padding:96px 16px 72px;
+            text-align:center;
+        }
+        .home-hero .hero-text{
+            max-width:920px;
+            margin:0 auto 36px;
+            font-size:1.05rem;
+            line-height:1.75;
+            color:var(--muted);
         }
 
-        /* ===== Buttons ===== */
-        .btn-primary {
-            background-color: #4b7bec;
-            border-color: #4b7bec;
+        .features-section{
+            background:var(--bg);
+            padding:72px 0 48px;
         }
 
-        .btn-primary:hover {
-            background-color: #3867d6;
-            border-color: #3867d6;
+        .features-row{
+            max-width:1120px;
+            margin:0 auto;
         }
 
-        .btn-success {
-            border-radius: 8px;
+        .feature-card{
+            background:#fff;
+            border-radius:18px;
+            padding:38px 34px;
+            text-align:center;
+            height:100%;
+            box-shadow:0 10px 28px rgba(0,0,0,.07);
         }
 
-        .btn-outline-danger {
-            border-radius: 8px;
+        .feature-icon{
+            font-size:40px;
+            margin-bottom:18px;
         }
 
-        /* ===== Footer ===== */
-        footer {
-            margin-top: 60px;
-            padding: 20px 0;
-            background: #343a40;
-            color: #fff;
-            text-align: center;
-            font-size: 0.9rem;
+        .feature-card h5{
+            font-weight:600;
+            margin-bottom:12px;
         }
 
-        /* ===== Flash Messages ===== */
-        .flash-container {
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            z-index: 1055;
-            width: 100%;
-            max-width: 380px;
+        .feature-card p{
+            font-size:.95rem;
+            line-height:1.65;
+            color:#666;
+            margin:0;
         }
 
-        .flash-container .alert {
-            margin-bottom: 10px;
-            border-radius: 10px;
-            font-size: 0.9rem;
+        .icon-blue{color:#4b7bec;}
+        .icon-green{color:#2ecc71;}
+        .icon-orange{color:#f39c12;}
+
+        /* ===== FOOTER ===== */
+        footer{
+            margin-top:80px;
+            padding:22px 0;
+            background:#343a40;
+            color:#fff;
+            text-align:center;
+            font-size:.9rem;
         }
 
-        @media (max-width: 576px) {
-            .flash-container {
-                left: 10px;
-                right: 10px;
-                max-width: none;
+        /* ===== MOBILE PERFECT ===== */
+        @media (max-width: 991px){
+            .home-hero{
+                padding:72px 16px 56px;
+            }
+            .features-section{
+                padding:56px 0 36px;
             }
         }
 
-        /* ===== Tables ===== */
-        .table th {
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .table td {
-            font-size: 0.9rem;
-        }
-
-        .table tbody tr:hover {
-            background-color: #f5f7fa;
-        }
-
-        /* ===== Forms ===== */
-        .form-label {
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-
-        .form-control {
-            border-radius: 10px;
+        @media (max-width: 576px){
+            .home-hero{
+                padding:56px 14px 44px;
+            }
+            .home-hero .hero-text{
+                font-size:1rem;
+                margin-bottom:28px;
+            }
+            .btn-primary{
+                width:100%;
+                padding:14px 18px;
+                font-size:1rem;
+            }
+            .feature-card{
+                padding:30px 26px;
+            }
+            footer{
+                font-size:.85rem;
+                padding:18px 10px;
+            }
         }
     </style>
 </head>
+
 <body>
 
-<!-- ================= Navbar ================= -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
     <div class="container">
-
-        <!-- LOGO + NAME -->
         <a class="navbar-brand d-flex align-items-center" href="{{ url_for('home') }}">
-            <img src="{{ url_for('static', filename='images/deemon-logo.png') }}"
-                 alt="Deemon Logo"
-                 width="40"
-                 class="me-2">
-            <strong>Deemon</strong>
+            <img src="{{ url_for('static', filename='images/deemon-logo.png') }}" width="40" class="me-2">
+            Deemon
         </a>
 
-        <!-- TOGGLER -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <!-- LINKS -->
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('home') }}">Home</a>
                 </li>
 
                 {% if current_user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="btn btn-outline-danger ms-lg-3"
-                           href="{{ url_for('logout') }}">
-                            Logout
-                        </a>
+                    <li class="nav-item ms-lg-3">
+                        <a class="btn btn-outline-danger" href="{{ url_for('logout') }}">Logout</a>
                     </li>
                 {% else %}
-                    <li class="nav-item">
-                        <button class="btn btn-primary ms-lg-3"
+                    <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
+                        <button class="btn btn-primary"
                                 data-bs-toggle="modal"
                                 data-bs-target="#loginModal">
                             Login
@@ -169,36 +180,15 @@
                 {% endif %}
             </ul>
         </div>
-
     </div>
 </nav>
 
-<!-- ================= Flash Messages ================= -->
-{% with messages = get_flashed_messages(with_categories=true) %}
-{% if messages %}
-<div class="flash-container">
-    {% for category, message in messages %}
-        <div class="alert alert-{{ category }} alert-dismissible fade show shadow" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    {% endfor %}
-</div>
-{% endif %}
-{% endwith %}
+{% block content %}{% endblock %}
 
-<!-- ================= Main Content ================= -->
-<div class="container mt-4 mb-5">
-    {% block content %}{% endblock %}
-</div>
-
-<!-- ================= Footer ================= -->
 <footer>
-    &copy; elrage {{ datetime.utcnow().year }} Deemon — Digital Education Monitoring & Planning System. All rights reserved.
+    &copy; elrage {{ datetime.utcnow().year }} Deemon — Digital Education Monitoring & Planning System.
 </footer>
 
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>

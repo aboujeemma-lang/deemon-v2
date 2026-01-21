@@ -5,57 +5,85 @@ Deemon – Digital Education Monitoring & Planning System
 {% endblock %}
 
 {% block content %}
-<div class="container text-center mt-5">
 
-    <!-- LOGO -->
-    <img src="{{ url_for('static', filename='images/deemon-logo.png') }}"
-         alt="Deemon Logo"
-         class="mb-4"
-         width="160">
+<section class="home-hero">
+    <div class="container">
+        <p class="hero-text">
+            A centralized platform that empowers teachers and school leadership
+            to plan lessons, submit schemes of learning, review academic progress,
+            and monitor performance efficiently.
+        </p>
 
-    <!-- SYSTEM NAME -->
-    <h1 class="fw-bold">Deemon</h1>
+        <button class="btn btn-primary btn-lg"
+                data-bs-toggle="modal"
+                data-bs-target="#loginModal">
+            Login to Continue
+        </button>
+    </div>
+</section>
 
-    <!-- TAGLINE -->
-    <h5 class="text-muted mb-4">
-        Digital Education Monitoring & Planning System
-    </h5>
+<section class="features-section">
+    <div class="container">
+        <div class="row g-4 features-row justify-content-center">
 
-    <!-- DESCRIPTION -->
-    <p class="lead mb-4">
-        A centralized platform for teachers and school leadership to plan,
-        submit, review, monitor lessons and schemes of learning efficiently.
-    </p>
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon icon-blue">
+                        <i class="bi bi-journal-text"></i>
+                    </div>
+                    <h5>Lesson Planning</h5>
+                    <p>
+                        Teachers create and submit structured lesson plans and
+                        schemes aligned with curriculum standards.
+                    </p>
+                </div>
+            </div>
 
-    <!-- LOGIN BUTTON -->
-    <button class="btn btn-primary btn-lg"
-            data-bs-toggle="modal"
-            data-bs-target="#loginModal">
-        Login Here
-    </button>
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon icon-green">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                    <h5>Approval Workflow</h5>
+                    <p>
+                        Headmasters review, approve, or return lesson plans
+                        with feedback in a transparent workflow.
+                    </p>
+                </div>
+            </div>
 
-</div>
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon icon-orange">
+                        <i class="bi bi-bar-chart-line"></i>
+                    </div>
+                    <h5>Monitoring & Reports</h5>
+                    <p>
+                        School leadership tracks teaching progress and
+                        performance through clear reports and dashboards.
+                    </p>
+                </div>
+            </div>
 
-<!-- LOGIN MODAL -->
-<div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+        </div>
+    </div>
+</section>
+
+<!-- LOGIN MODAL (UNCHANGED) -->
+<div class="modal fade" id="loginModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
         <div class="modal-content">
-
             <div class="modal-header">
                 <h5 class="modal-title">Login to Deemon</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
             <div class="modal-body">
-
                 <div class="text-center mb-3">
-                    <img src="{{ url_for('static', filename='images/deemon-logo.png') }}"
-                         alt="Deemon Logo"
-                         width="90">
+                    <img src="{{ url_for('static', filename='images/deemon-logo.png') }}" width="90">
                 </div>
 
                 <form method="POST" action="{{ url_for('login') }}">
-
                     <div class="mb-3 text-start">
                         <label class="form-label">Email</label>
                         <input type="email" name="email" class="form-control" required>
@@ -66,26 +94,11 @@ Deemon – Digital Education Monitoring & Planning System
                         <input type="password" name="password" class="form-control" required>
                     </div>
 
-                    <button type="submit" class="btn btn-success w-100">
-                        Login
-                    </button>
-
+                    <button class="btn btn-success w-100 py-2">Login</button>
                 </form>
-
             </div>
-
         </div>
     </div>
 </div>
 
-<!-- AUTO-OPEN LOGIN MODAL -->
-<script>
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("showLogin") === "1") {
-        const loginModal = new bootstrap.Modal(
-            document.getElementById("loginModal")
-        );
-        loginModal.show();
-    }
-</script>
 {% endblock %}
