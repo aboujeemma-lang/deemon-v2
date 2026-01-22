@@ -1082,29 +1082,34 @@ def teacher_resources():
     return render_template('teacher_resources.html', schemes=schemes)
 
 # --------------------
-# DATABASE INIT
+# DATABASE INIT (LOCAL DEV ONLY)
 # --------------------
-with app.app_context():
-    db.create_all()
+if os.environ.get("FLASK_ENV") == "development":
+    with app.app_context():
+        db.create_all()
 
-    # Default school
-    default_school = School.query.filter_by(name="Default School").first()
-    if not default_school:
-        default_school = School(name="Default School", email="default@school.com", phone="0000000000")
-        db.session.add(default_school)
-        db.session.commit()
+        # Default school
+        default_school = School.query.filter_by(name="Default School").first()
+        if not default_school:
+            default_school = School(
+                name="Default School",
+                email="default@school.com",
+                phone="0000000000"
+            )
+            db.session.add(default_school)
+            db.session.commit()
 
-    # Default super admin
-    if not User.query.filter_by(email='admin@example.com').first():
-        admin = User(
-            name='Super Admin',
-            email='admin@example.com',
-            password=generate_password_hash('admin123'),
-            role='super_admin'
-        )
-        db.session.add(admin)
-        db.session.commit()
-        print("✅ Superadmin created with hashed password")
+        # Default super admin
+        if not User.query.filter_by(email='admin@example.com').first():
+            admin = User(
+                name='Super Admin',
+                email='admin@example.com',
+                password=generate_password_hash('admin123'),
+                role='super_admin'
+            )
+            db.session.add(admin)
+            db.session.commit()
+            print("✅ Superadmin created")
 
 # --------------------
 # RUN APP
