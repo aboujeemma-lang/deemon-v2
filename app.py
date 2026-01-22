@@ -44,15 +44,15 @@ app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key")
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 if DATABASE_URL:
-    # For Render production PostgreSQL
+    # Fix for Render (postgres:// → postgresql://)
     if DATABASE_URL.startswith("postgres://"):
         DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
-    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
+    app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 else:
-    # Local development SQLite fallback
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+    # Local development ONLY
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # ================= INIT EXTENSIONS =================
 db.init_app(app)
