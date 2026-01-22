@@ -49,8 +49,10 @@ if DATABASE_URL:
         DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
     app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 else:
-    # Local development ONLY
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
+    # Use SQLite file (works locally and on Render)
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    db_path = os.path.join(basedir, 'instance', 'database.db')
+    app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{db_path}"
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
@@ -1084,35 +1086,15 @@ def teacher_resources():
 # --------------------
 # DATABASE INIT (LOCAL DEV ONLY)
 # --------------------
+# DATABASE INIT (LOCAL DEV ONLY)
 if os.environ.get("FLASK_ENV") == "development":
     with app.app_context():
+        # Only create tables if running locally
         db.create_all()
-
-        # Default school
-        default_school = School.query.filter_by(name="Default School").first()
-        if not default_school:
-            default_school = School(
-                name="Default School",
-                email="default@school.com",
-                phone="0000000000"
-            )
-            db.session.add(default_school)
-            db.session.commit()
-
-        # Default super admin
-        if not User.query.filter_by(email='admin@example.com').first():
-            admin = User(
-                name='Super Admin',
-                email='admin@example.com',
-                password=generate_password_hash('admin123'),
-                role='super_admin'
-            )
-            db.session.add(admin)
-            db.session.commit()
-            print("✅ Superadmin created")
 
 # --------------------
 # RUN APP
 # --------------------
 if __name__ == '__main__':
-    app.run(debug=True, use_reloader=False)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
