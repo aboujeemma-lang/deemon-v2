@@ -43,14 +43,14 @@ app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key")
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
-if not DATABASE_URL:
-    # Local development (SQLite)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-else:
-    # Production (Render PostgreSQL)
+if DATABASE_URL:
+    # For Render production PostgreSQL
     if DATABASE_URL.startswith("postgres://"):
         DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
     app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
+else:
+    # Local development SQLite fallback
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -83,7 +83,7 @@ class User(UserMixin, db.Model):
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     contact = db.Column(db.String(30))  # 👈 NEW
-    password = db.Column(db.String(100), nullable=False)
+    password = db.Column(db.Text, nullable=False)
     role = db.Column(db.String(20), nullable=False)  # super_admin, headmaster, teacher
     school_id = db.Column(db.Integer, db.ForeignKey('schools.id'), nullable=True)
     lessons = db.relationship('Lesson', backref='teacher', lazy=True)
